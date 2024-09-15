@@ -1,0 +1,33 @@
+pipeline{
+    agent any
+    stages
+    {
+        stage('checkout')
+        {
+            steps{
+                git 'https://github.com/devaraj2002/mentorprroject.git'
+                sh 'pwd'
+            }
+        }
+         stage('build')
+        {
+            steps{
+                
+                sh 'cd /var/lib/jenkins/workspace/project-demo/hello-world/ && mvn clean package '
+              
+            }
+        }
+        stage('docker')
+        {
+            steps{
+                sh 'pwd && ls'
+               // sh 'sudo cp -r ./hello-world/* ./'
+                sh 'cd /var/lib/jenkins/workspace/project-demo/hello-world/ &&  docker build -t tomcat:latest .'
+                sh 'docker run -itd --name tomcat1 -p 8081:8080 tomcat:latest'
+            }
+        }
+    }
+}
+
+// docker will raise error so we need to give permission , then reload daemon and restart docker
+ie. chmod 777 /var/run/docker.sock ,  systemctl daemon-reload and systemctl restart docker 
